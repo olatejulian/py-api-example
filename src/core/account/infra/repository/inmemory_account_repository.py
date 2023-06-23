@@ -1,13 +1,16 @@
-from src.core.account.domain import Account, AccountNotFoundException, AccountRepository
-
-from .exception import DuplicateIdOrEmailException
+from src.core.account.domain import (
+    Account,
+    AccountNotFoundException,
+    AccountRepository,
+    DuplicateIdOrEmailException,
+)
 
 
 class InMemoryAccountRepository(AccountRepository):
     def __init__(self):
         self._accounts: dict[tuple[str, str], Account] = {}
 
-    async def save(self, account: Account) -> Account:
+    async def save(self, account: Account) -> None:
         indexes = (account.id.value, account.email.address.value)
 
         if indexes not in self._accounts:
@@ -15,8 +18,6 @@ class InMemoryAccountRepository(AccountRepository):
 
         else:
             raise DuplicateIdOrEmailException
-
-        return account
 
     async def get_by_id(self, account_id) -> Account:
         for account in self._accounts.values():
