@@ -6,7 +6,7 @@ from beanie.exceptions import RevisionIdWasChanged
 from motor.motor_asyncio import AsyncIOMotorClientSession
 from pydantic import Field
 
-from src.core.account.domain import (
+from src.account.domain import (
     Account,
     AccountEmail,
     AccountNotFoundException,

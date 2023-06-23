@@ -2,7 +2,7 @@ import asyncio
 
 from celery import shared_task
 
-from src.core.shared.interface import (
+from src.shared.interface import (
     Event,
     EventBus,
     EventDoesNotHaveHandlersException,

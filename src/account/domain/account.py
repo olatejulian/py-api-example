@@ -2,7 +2,7 @@
 
 import pendulum
 
-from src.core.shared import Entity
+from src.shared import Entity
 
 from .event import AccountCreated
 from .value_object import EmailAddress, Id, Name, Password, Time, VerificationCode

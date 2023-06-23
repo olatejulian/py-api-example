@@ -1,6 +1,6 @@
 from uuid import UUID, uuid4
 
-from src.core.shared import ValueObject, ValueValidator
+from src.shared import ValueObject, ValueValidator
 
 
 class InvalidIdException(Exception):

@@ -1,5 +1,5 @@
-from src.core.account.domain import Account, AccountInputDto, AccountRepository
-from src.core.shared import Command, CommandHandler, EventBus
+from src.account.domain import Account, AccountInputDto, AccountRepository
+from src.shared import Command, CommandHandler, EventBus
 
 
 class CreateAccount(Command, AccountInputDto):

@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel, EmailStr
 
-from src.core.account import CreateAccount, EmailAddress, Name, Password
-from src.core.shared import CommandBus
+from src.account import CreateAccount, EmailAddress, Name, Password
+from src.shared import CommandBus
 
 from ..dependency_injector import command_bus_factory
 

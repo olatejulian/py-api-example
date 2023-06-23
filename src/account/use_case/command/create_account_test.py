@@ -1,7 +1,7 @@
 import pytest
 
-from src.core.account.domain import AccountRepository, EmailAddress, Name, Password
-from src.core.shared import EventBus
+from src.account.domain import AccountRepository, EmailAddress, Name, Password
+from src.shared import EventBus
 
 from .create_account import CreateAccount, CreateAccountHandler
 

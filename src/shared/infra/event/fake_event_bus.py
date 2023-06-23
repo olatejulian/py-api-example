@@ -1,4 +1,4 @@
-from src.core.shared.interface import Event, EventBus, EventHandler
+from src.shared.interface import Event, EventBus, EventHandler
 
 
 class FakeEventBus(EventBus):

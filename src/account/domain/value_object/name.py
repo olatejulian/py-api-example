@@ -1,4 +1,4 @@
-from src.core.shared import ValueObject, ValueValidator
+from src.shared import ValueObject, ValueValidator
 
 
 class InvalidNameTypeException(Exception):

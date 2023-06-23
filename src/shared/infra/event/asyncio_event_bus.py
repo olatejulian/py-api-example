@@ -1,6 +1,6 @@
 import asyncio
 
-from src.core.shared.interface import Event, EventBus, EventDoesNotHaveHandlersException
+from src.shared.interface import Event, EventBus, EventDoesNotHaveHandlersException
 
 
 class AsyncioEventBus(EventBus):

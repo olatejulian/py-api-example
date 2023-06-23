@@ -1,6 +1,6 @@
 from celery import Celery
 
-from src.core.shared import CeleryConfig
+from src.shared import CeleryConfig
 
 
 def celery_bootstrap() -> Celery:

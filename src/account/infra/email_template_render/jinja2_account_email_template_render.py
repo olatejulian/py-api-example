@@ -1,13 +1,13 @@
 from jinja2 import Environment, FileSystemLoader
 
-from src.core.account.domain import (
+from src.account.domain import (
     AccountEmailTemplateRender,
     EmailContent,
     EmailContents,
     Name,
     Url,
 )
-from src.core.shared import EmailTemplateConfig
+from src.shared import EmailTemplateConfig
 
 
 class Jinja2AccountEmailTemplateRender(AccountEmailTemplateRender):

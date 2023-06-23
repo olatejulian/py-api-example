@@ -2,7 +2,7 @@ from email.message import EmailMessage
 
 from aiosmtplib import SMTP
 
-from src.core.account.domain import (
+from src.account.domain import (
     AccountEmailSender,
     EmailAddress,
     EmailContent,

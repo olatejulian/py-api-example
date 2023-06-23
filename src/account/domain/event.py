@@ -1,4 +1,4 @@
-from src.core.shared import Event
+from src.shared import Event
 
 from .value_object import EmailAddress, Id, Name
 

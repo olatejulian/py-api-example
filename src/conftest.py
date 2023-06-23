@@ -4,8 +4,8 @@ from uuid import uuid4
 import pytest
 import pytest_asyncio
 
-from src.core.account import BeanieAccountModel
-from src.core.account.domain import (
+from src.account import BeanieAccountModel
+from src.account.domain import (
     Account,
     AccountEmailTemplateRender,
     AccountInputDto,
@@ -14,12 +14,12 @@ from src.core.account.domain import (
     Name,
     Password,
 )
-from src.core.account.infra import (
+from src.account.infra import (
     BeanieAccountRepository,
     InMemoryAccountRepository,
     Jinja2AccountEmailTemplateRender,
 )
-from src.core.shared import Database, EmailTemplateConfig, EventBus, FakeEventBus
+from src.shared import Database, EmailTemplateConfig, EventBus, FakeEventBus
 
 
 @pytest.fixture

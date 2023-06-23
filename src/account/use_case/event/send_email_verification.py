@@ -1,4 +1,4 @@
-from src.core.account.domain import (
+from src.account.domain import (
     AccountCreated,
     AccountEmailSender,
     AccountEmailTemplateRender,
@@ -6,7 +6,7 @@ from src.core.account.domain import (
     EmailSubject,
     Url,
 )
-from src.core.shared import AppConfig, EventHandler
+from src.shared import AppConfig, EventHandler
 
 
 class SendEmailVerification(EventHandler[AccountCreated]):

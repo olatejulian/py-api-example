@@ -1,6 +1,6 @@
 from random import randint
 
-from src.core.shared import ValueObject, ValueValidator
+from src.shared import ValueObject, ValueValidator
 
 
 class InvalidVerificationCodeException(Exception):

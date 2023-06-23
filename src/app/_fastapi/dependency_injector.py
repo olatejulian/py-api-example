@@ -1,6 +1,6 @@
 from fastapi import Depends
 
-from src.core.account import (
+from src.account import (
     AccountCreated,
     AccountEmailSender,
     AccountEmailTemplateRender,
@@ -16,7 +16,7 @@ from src.core.account import (
     Jinja2AccountEmailTemplateRender,
     SendEmailVerification,
 )
-from src.core.shared import (
+from src.shared import (
     AppConfig,
     AsyncioEventBus,
     CeleryEventBus,
