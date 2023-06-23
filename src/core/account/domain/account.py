@@ -1,6 +1,5 @@
 # pylint: disable=invalid-name,redefined-builtin,too-few-public-methods,too-many-arguments,too-many-instance-attributes
 
-
 import pendulum
 
 from src.core.shared import Entity
@@ -9,7 +8,7 @@ from .event import AccountCreated
 from .value_object import EmailAddress, Id, Name, Password, Time, VerificationCode
 
 
-class AccountEmail(Entity):
+class AccountEmail:
     verification_code_expiration_in_minutes = 15
 
     def __init__(
