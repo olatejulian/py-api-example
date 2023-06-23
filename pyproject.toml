@@ -1,0 +1,75 @@
+[project]
+name = "py-api-example"
+version = "0.0.0"
+description = "A simple example of a Python API using FastAPI and Beanie"
+authors = [
+  { name = "olatejulian", email = "julian.lf.olate@gmail.com" }
+]
+dependencies = [
+    "aiosmtplib>=2.0.2",
+    "beanie>=1.17.0",
+    "email-validator>=2.0.0.post2",
+    "fastapi>=0.95.1",
+    "jinja2>=3.1.2",
+    "motor>=3.1.1",
+    "passlib[bcrypt]>=1.7.4",
+    "pydantic>=1.10.7",
+    "python-dotenv>=1.0.0",
+    "python-jose[cryptography]>=3.3.0",
+    "python-multipart>=0.0.6",
+    "uvicorn>=0.22.0",
+    "pendulum>=2.1.2",
+    "celery[redis]>=5.3.1",
+    "flower>=2.0.0",
+]
+requires-python = ">=3.11"
+license = { text = "MIT" }
+
+[tool.pdm]
+[tool.pdm.dev-dependencies]
+dev = [
+    "beautifulsoup4>=4.12.2",
+    "black>=23.3.0",
+    "flake8>=6.0.0",
+    "httpx>=0.24.1",
+    "isort>=5.12.0",
+    "mypy>=1.3.0",
+    "pytest[celery]>=7.3.2",
+    "pytest-asyncio>=0.21.0",
+    "pytest-cov>=4.1.0",
+    "python-semantic-release>=7.34.3",
+    "types-passlib>=1.7.7.12",
+    "watchdog>=3.0.0",
+    "pytest-celery>=0.0.0",
+]
+
+[tool.pdm.scripts]
+cov = { shell = "clear; pytest --cov=src src"}
+format = { shell = "clear; black src"}
+start = {shell ="clear; uvicorn src.main:app --reload --host 0.0.0.0 --port 3000"}
+"start:celery:flower" = {shell = "clear; watchmedo auto-restart -d ./src -p *.py --recursive -- celery -A src.main.celery flower --loglevel=info"}
+"start:celery:worker" = {shell = "clear; watchmedo auto-restart -d ./src -p *.py --recursive -- celery -A src.main.celery worker --loglevel=info"}
+release = { shell = "clear; semantic-release publish"}
+test = { shell = "clear; pytest; rm -rf ./**/__pycache__/"}
+
+[tool.commitizen]
+major_version_zero = true
+name = "cz_conventional_commits"
+tag_format = "$version"
+update_changelog_on_bump = true
+version_provider = "pep621"
+version_type = "semver"
+
+[tool.semantic_release]
+branch = "release"
+command = "pdm run cz bump --check-consistency"
+commit_message = "build(release): :bookmark: {version}"
+commit_version_number = true
+upload_to_pypi = false
+upload_to_release = true
+upload_to_repository = false
+version_source = "tag"
+version_variable = [
+  "src.__init__.py:__version__",
+  "pyproject.toml:version"
+]
