@@ -1,0 +1,10 @@
+Email Verification
+
+Thank you for signing up! To activate your account, please copy and paste the following URL into your browser:
+
+{{ email_verification_url }}
+
+If you are unable to click the URL, please visit the URL directly.
+
+Thank you,
+Julian Olate
