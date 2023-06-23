@@ -28,8 +28,9 @@ class SendEmailVerification(EventHandler[AccountCreated]):
         email_verification_code = account.generate_verification_code()
 
         account_name = account.name
+        account_email_address = account.email.address
         email_verification_url = Url(
-            f"{self.app_config.url}/verify?code={email_verification_code.value}"
+            f"{self.app_config.url}/verify?emailAddress={account_email_address}&code={email_verification_code.value}"
         )
 
         contents = self.email_template_render.render_email_verification_code_template(
