@@ -8,13 +8,13 @@ from .create_account import CreateAccount, CreateAccountHandler
 
 @pytest.mark.asyncio
 async def test_create_account_command_handler(
-    account_repository: AccountRepository, event_bus_fixture: EventBus
+    fake_account_repository: AccountRepository, event_bus_fixture: EventBus
 ):
     """
     should be able to create an account
     """
     # given
-    repository = account_repository
+    repository = fake_account_repository
     event_bus = event_bus_fixture
 
     command = CreateAccount(
