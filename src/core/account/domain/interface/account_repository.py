@@ -3,13 +3,17 @@ from abc import ABC, abstractmethod
 from ..account import Account
 
 
+class DuplicateIdOrEmailException(Exception):
+    pass
+
+
 class AccountNotFoundException(Exception):
     pass
 
 
 class AccountRepository(ABC):
     @abstractmethod
-    async def save(self, account: Account) -> Account:
+    async def save(self, account: Account) -> None:
         raise NotImplementedError
 
     @abstractmethod
