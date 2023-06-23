@@ -6,6 +6,8 @@ from src.core.account import (
     AccountEmailTemplateRender,
     AccountRepository,
     AioSmtpAccountEmailSender,
+    BeanieAccountModel,
+    BeanieAccountRepository,
     CreateAccount,
     CreateAccountHandler,
     EmailAddress,
@@ -19,6 +21,8 @@ from src.core.shared import (
     AsyncioEventBus,
     CeleryEventBus,
     CommandBus,
+    Database,
+    DatabaseConfig,
     DefaultCommandBus,
     EmailConfig,
     EmailTemplateConfig,
@@ -39,8 +43,24 @@ def account_email_config_factory() -> EmailConfig:
     return EmailConfig()
 
 
-def account_repository_factory() -> AccountRepository:
+def database_config_factory() -> DatabaseConfig:
+    return DatabaseConfig()
+
+
+def database_factory(
+    config: DatabaseConfig = Depends(database_config_factory),
+) -> Database:
+    return Database(uri=config.uri, db_name=config.name, models=[BeanieAccountModel])
+
+
+def fake_account_repository_factory() -> AccountRepository:
     return InMemoryAccountRepository()
+
+
+def beanie_account_repository_factory(
+    database: Database = Depends(database_factory),
+) -> AccountRepository:
+    return BeanieAccountRepository(database.session)
 
 
 def account_email_template_render_factory(
@@ -67,7 +87,7 @@ def fake_account_email_sender_factory() -> AccountEmailSender:
 
 def asyncio_event_bus_factory(
     app_config: AppConfig = Depends(app_config_factory),
-    account_repository: AccountRepository = Depends(account_repository_factory),
+    account_repository: AccountRepository = Depends(fake_account_repository_factory),
     account_email_template_render: AccountEmailTemplateRender = Depends(
         account_email_template_render_factory
     ),
@@ -97,7 +117,7 @@ def fake_event_bus_factory() -> EventBus:
 
 def celery_event_bus_factory(
     app_config: AppConfig = Depends(app_config_factory),
-    account_repository: AccountRepository = Depends(account_repository_factory),
+    account_repository: AccountRepository = Depends(fake_account_repository_factory),
     account_email_template_render: AccountEmailTemplateRender = Depends(
         account_email_template_render_factory
     ),
@@ -122,7 +142,7 @@ def celery_event_bus_factory(
 
 
 def command_bus_factory(
-    repository: AccountRepository = Depends(account_repository_factory),
+    repository: AccountRepository = Depends(fake_account_repository_factory),
     event_bus: EventBus = Depends(celery_event_bus_factory),
 ) -> CommandBus:
     bus = DefaultCommandBus()
