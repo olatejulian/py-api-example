@@ -24,8 +24,6 @@ def test_account_template_render_render_email_verification_template(
 
     html = template.html_content.value
 
-    print(html)
-
     soup = BeautifulSoup(html, "html.parser")
 
     account_name_in_template = soup.find("b", {"class": "account-name"})
