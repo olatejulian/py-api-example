@@ -194,6 +194,26 @@ def test_account_verify_email_method_when_the_verification_code_is_not_the_same(
         entity.verify_email(false_code)
 
 
+def test_account_is_email_verified_method(
+    random_account_fixture: Account,
+):
+    """
+    should be able to say if the account email is verified
+    """
+    # given
+    entity = random_account_fixture
+
+    verification_code = entity.generate_verification_code()
+
+    entity.verify_email(verification_code)
+
+    # when
+    result = entity.is_email_verified()
+
+    # then
+    assert result is True
+
+
 def test_account_generate_reset_password_code_method(random_account_fixture: Account):
     """
     should be able to generate a reset password code for the account
@@ -375,7 +395,9 @@ def test_account_activate_method(random_account_fixture: Account):
     # given
     entity = random_account_fixture
 
-    entity.email.verified = True
+    verification_code = entity.generate_verification_code()
+
+    entity.verify_email(verification_code)
 
     # when
     entity.activate()
@@ -399,6 +421,28 @@ def test_account_activate_method_when_email_is_not_verified(
         entity.activate()
 
 
+def test_account_is_active_method(
+    random_account_fixture: Account,
+):
+    """
+    should be able to say if the account is active
+    """
+    # given
+    entity = random_account_fixture
+
+    verification_code = entity.generate_verification_code()
+
+    entity.verify_email(verification_code)
+
+    entity.activate()
+
+    # when
+    result = entity.is_active()
+
+    # then
+    assert result is True
+
+
 def test_account_deactivate_method(random_account_fixture: Account):
     """
     should be able to deactivate the account
@@ -406,7 +450,9 @@ def test_account_deactivate_method(random_account_fixture: Account):
     # given
     entity = random_account_fixture
 
-    entity.email.verified = True
+    verification_code = entity.generate_verification_code()
+
+    entity.verify_email(verification_code)
 
     entity.activate()
 
