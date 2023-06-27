@@ -19,7 +19,13 @@ from src.account.infra import (
     InMemoryAccountRepository,
     Jinja2AccountEmailTemplateRender,
 )
-from src.shared import Database, EmailTemplateConfig, EventBus, FakeEventBus
+from src.shared import (
+    Database,
+    DatabaseConfig,
+    EmailTemplateConfig,
+    EventBus,
+    FakeEventBus,
+)
 
 
 @pytest.fixture
@@ -60,9 +66,12 @@ def account_email_template_render() -> AccountEmailTemplateRender:
 
 @pytest_asyncio.fixture()
 async def database_fixture():
+    config = DatabaseConfig()
+
+    config.name = "test-py-api-example"
+
     database = Database(
-        uri="mongodb://mongo:mongo@localhost:27017",
-        db_name="test-py-api-example",
+        config=config,
         models=[BeanieAccountModel],
     )
 

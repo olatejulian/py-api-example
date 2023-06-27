@@ -50,7 +50,7 @@ def database_config_factory() -> DatabaseConfig:
 def database_factory(
     config: DatabaseConfig = Depends(database_config_factory),
 ) -> Database:
-    return Database(uri=config.uri, db_name=config.name, models=[BeanieAccountModel])
+    return Database(config, [BeanieAccountModel])
 
 
 def fake_account_repository_factory() -> AccountRepository:

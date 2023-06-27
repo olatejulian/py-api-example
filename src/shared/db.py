@@ -7,16 +7,26 @@ from motor.motor_asyncio import (
     AsyncIOMotorDatabase,
 )
 
+from .config import BaseConfig
+
+
+class DatabaseConfig(BaseConfig):
+    def __init__(self):
+        super().__init__()
+
+        self.name = self._get("DATABASE_NAME")
+        self.uri = self._get("DATABASE_URI")
+
 
 class Database:
     client: AsyncIOMotorClient
     database: AsyncIOMotorDatabase
     session: AsyncIOMotorClientSession
 
-    def __init__(self, uri: str, db_name: str, models: list[Any]) -> None:
-        self.client = AsyncIOMotorClient(uri)
+    def __init__(self, config: DatabaseConfig, models: list[Any]) -> None:
+        self.client = AsyncIOMotorClient(config.uri)
 
-        self.database = self.client[db_name]
+        self.database = self.client[config.name]
 
         self.models = models
 

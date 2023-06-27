@@ -26,14 +26,6 @@ class AppConfig(BaseConfig):
         self.url = self._get("APP_URL")
 
 
-class DatabaseConfig(BaseConfig):
-    def __init__(self):
-        super().__init__()
-
-        self.name = self._get("DATABASE_NAME")
-        self.uri = self._get("DATABASE_URI")
-
-
 class EmailConfig(BaseConfig):
     def __init__(self):
         super().__init__()
@@ -73,6 +65,3 @@ class AuthConfig(BaseConfig):
         self.access_token_expire_minutes = int(
             self._get("AUTH_ACCESS_TOKEN_EXPIRE_MINUTES")
         )
-
-
-
