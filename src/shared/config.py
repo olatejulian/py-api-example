@@ -75,14 +75,4 @@ class AuthConfig(BaseConfig):
         )
 
 
-class CeleryConfig(BaseConfig):
-    def __init__(self):
-        super().__init__()
 
-        self.broker_url = self._get("CELERY_BROKER_URL")
-        self.result_backend = self._get("CELERY_RESULT_BACKEND")
-        self.task_serializer = self._get("CELERY_TASK_SERIALIZER")
-        self.result_serializer = self._get("CELERY_RESULT_SERIALIZER")
-        self.accept_content = self._get("CELERY_ACCEPT_CONTENT").split(",")
-        # self.result_expires = self._get("CELERY_RESULT_EXPIRES")
-        # self.timezone = self._get("CELERY_TIMEZONE")

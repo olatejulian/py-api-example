@@ -1,3 +1,4 @@
+from .celery import *
 from .config import *
 from .db import *
 from .entity import *

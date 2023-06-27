@@ -1,18 +1,5 @@
-import asyncio
-
-from celery import shared_task
-
-from src.shared.interface import (
-    Event,
-    EventBus,
-    EventDoesNotHaveHandlersException,
-    EventHandler,
-)
-
-
-@shared_task()
-def executer(handler: EventHandler, event: Event) -> None:
-    asyncio.run(handler.handle(event))
+from src.shared.celery import event_handler_task
+from src.shared.interface import Event, EventBus, EventDoesNotHaveHandlersException
 
 
 class CeleryEventBus(EventBus):
@@ -25,4 +12,6 @@ class CeleryEventBus(EventBus):
         handlers = self._handlers[event_name]
 
         for handler in handlers:
-            executer.apply_async(kwargs={"handler": handler, "event": event})  # type: ignore
+            event_handler_task.apply_async(
+                kwargs={"handler": handler, "event": event}  # type: ignore
+            )
