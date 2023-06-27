@@ -163,6 +163,15 @@ class Account(Entity):
 
         self.__update_time()
 
+    def is_email_verified(self) -> bool:
+        return (
+            True
+            if self.email.verified is True
+            and self.email.verification_code is None
+            and self.email.verified_on is not None
+            else False
+        )
+
     def generate_reset_password_code(self) -> VerificationCode:
         self.password.reset_verification_code = VerificationCode.generate()
 
@@ -198,7 +207,7 @@ class Account(Entity):
         return self.password.password == password
 
     def activate(self) -> None:
-        if self.email.verified is False:
+        if not self.is_email_verified():
             raise AccountEmailMustBeVerifiedException()
 
         self.active = True
@@ -206,6 +215,9 @@ class Account(Entity):
         self.activated_on = Time.generate()
 
         self.__update_time()
+
+    def is_active(self) -> bool:
+        return bool(self.active is True and self.activated_on is not None)
 
     def deactivate(self) -> None:
         self.active = False
