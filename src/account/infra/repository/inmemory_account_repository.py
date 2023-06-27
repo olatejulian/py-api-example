@@ -3,6 +3,8 @@ from src.account.domain import (
     AccountNotFoundException,
     AccountRepository,
     DuplicateIdOrEmailException,
+    EmailAddress,
+    Id,
 )
 
 
@@ -19,9 +21,16 @@ class InMemoryAccountRepository(AccountRepository):
         else:
             raise DuplicateIdOrEmailException
 
-    async def get_by_id(self, account_id) -> Account:
-        for account in self._accounts.values():
-            if account.id.value == account_id:
+    async def get_by_id(self, account_id: Id) -> Account:
+        for index, account in self._accounts.items():
+            if index[0] == account_id.value:
+                return account
+
+        raise AccountNotFoundException()
+
+    async def get_by_email(self, email: EmailAddress) -> Account:
+        for index, account in self._accounts.items():
+            if index[1] == email.value:
                 return account
 
         raise AccountNotFoundException()

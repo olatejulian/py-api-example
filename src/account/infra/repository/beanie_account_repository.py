@@ -140,6 +140,13 @@ class BeanieAccountRepository(AccountRepository):
 
         return self._to_domain(model)
 
+    async def get_by_email(self, email: EmailAddress) -> Account:
+        model = await self.__get_model_by(
+            BeanieAccountModel.email_address == email.value
+        )
+
+        return self._to_domain(model)
+
     async def update(self, account: Account) -> None:
         account_id = account.id
 
