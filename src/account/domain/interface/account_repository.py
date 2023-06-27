@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from ..account import Account
+from ..account import Account, EmailAddress, Id
 
 
 class DuplicateIdOrEmailException(Exception):
@@ -17,7 +17,11 @@ class AccountRepository(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    async def get_by_id(self, account_id) -> Account:
+    async def get_by_id(self, account_id: Id) -> Account:
+        raise NotImplementedError
+
+    @abstractmethod
+    async def get_by_email(self, email: EmailAddress) -> Account:
         raise NotImplementedError
 
     @abstractmethod
