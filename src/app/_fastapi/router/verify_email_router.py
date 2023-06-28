@@ -18,7 +18,7 @@ verifyEmailRouter = APIRouter(tags=["public"])
 async def verify_email(
     email: str,
     token: str,
-    command_bus: CommandBus = Depends(command_bus_factory),
+    command_bus: CommandBus[VerifyAccountEmail, None] = Depends(command_bus_factory),
 ) -> VerifyEmailResponse:
     await command_bus.dispatch(
         VerifyAccountEmail(email=EmailAddress(email), token=VerificationCode(token))
