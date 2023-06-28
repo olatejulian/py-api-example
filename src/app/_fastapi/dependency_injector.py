@@ -49,10 +49,14 @@ def database_config_factory() -> DatabaseConfig:
     return DatabaseConfig()
 
 
-def database_factory(
+async def database_factory(
     config: DatabaseConfig = Depends(database_config_factory),
 ) -> Database:
-    return Database(config, [BeanieAccountModel])
+    database = Database(config, [BeanieAccountModel])
+
+    await database.connect()
+
+    return database
 
 
 def fake_account_repository_factory() -> AccountRepository:
@@ -89,7 +93,7 @@ def fake_account_email_sender_factory() -> AccountEmailSender:
 
 def asyncio_event_bus_factory(
     app_config: AppConfig = Depends(app_config_factory),
-    account_repository: AccountRepository = Depends(fake_account_repository_factory),
+    account_repository: AccountRepository = Depends(beanie_account_repository_factory),
     account_email_template_render: AccountEmailTemplateRender = Depends(
         account_email_template_render_factory
     ),
@@ -119,7 +123,7 @@ def fake_event_bus_factory() -> EventBus:
 
 def celery_event_bus_factory(
     app_config: AppConfig = Depends(app_config_factory),
-    account_repository: AccountRepository = Depends(fake_account_repository_factory),
+    account_repository: AccountRepository = Depends(beanie_account_repository_factory),
     account_email_template_render: AccountEmailTemplateRender = Depends(
         account_email_template_render_factory
     ),
@@ -144,7 +148,7 @@ def celery_event_bus_factory(
 
 
 def command_bus_factory(
-    repository: AccountRepository = Depends(fake_account_repository_factory),
+    repository: AccountRepository = Depends(beanie_account_repository_factory),
     event_bus: EventBus = Depends(celery_event_bus_factory),
 ) -> CommandBus:
     bus = DefaultCommandBus()
