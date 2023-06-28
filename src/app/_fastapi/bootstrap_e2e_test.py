@@ -12,6 +12,7 @@ from .dependency_injector import (
     database_config_factory,
     fake_event_bus_factory,
 )
+from .router import signup_response_message
 
 
 def override_database_config_factory() -> DatabaseConfig:
@@ -45,7 +46,16 @@ def test_signup():
 
     # then
     assert response.status_code == 200
-    assert response.json() == {"success": True}
+
+    response_body = response.json()
+
+    assert response_body["status_code"] == 200
+
+    assert response_body["message"] == signup_response_message(
+        request_body["email"]
+    )  # pylint: disable=line-too-long
+
+    assert response_body["data"]["email"] == request_body["email"]
 
 
 @pytest.mark.asyncio
