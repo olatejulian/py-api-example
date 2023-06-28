@@ -1,14 +1,21 @@
 from fastapi import APIRouter, Depends
-from pydantic import BaseModel
 
 from src.account import EmailAddress, VerificationCode, VerifyAccountEmail
 from src.shared import CommandBus
 
 from ..dependency_injector import command_bus_factory
+from ..http_response_model import HTTPResponseModel, SchemaExtraConfig
 
 
-class VerifyEmailResponse(BaseModel):
-    success: bool
+def verify_email_response_message() -> str:
+    return "Email verified successfully."
+
+
+class VerifyEmailResponse(HTTPResponseModel[dict]):
+    class Config:
+        schema_extra = SchemaExtraConfig.override_schema_extra_example(
+            data={}, message=verify_email_response_message()
+        )
 
 
 verifyEmailRouter = APIRouter(tags=["public"])
@@ -24,4 +31,8 @@ async def verify_email(
         VerifyAccountEmail(email=EmailAddress(email), token=VerificationCode(token))
     )
 
-    return VerifyEmailResponse(success=True)
+    return VerifyEmailResponse(
+        status_code=200,
+        data={},
+        message=verify_email_response_message(),
+    )
