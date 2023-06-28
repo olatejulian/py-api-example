@@ -11,7 +11,7 @@ class SchemaExtraConfig:
         "example": {
             "status_code": 200,
             "message": "Response message",
-            "data": {"key": "value"},
+            "data": {},
         },
     }
 
@@ -41,7 +41,7 @@ class SchemaExtraConfig:
 
 
 class HTTPResponseModel(GenericModel, Generic[HTTPResponseDataType]):
-    status_code: int | None = None
+    status_code: int
     message: str
     data: dict[str, Any] | HTTPResponseDataType = {}
 
