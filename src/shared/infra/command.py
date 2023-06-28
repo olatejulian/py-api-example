@@ -3,10 +3,12 @@ from ..interface import (
     CommandBus,
     CommandDoesNotHaveHandlerException,
     CommandHandler,
+    CommandHandlerResponseType,
+    CommandType,
 )
 
 
-class DefaultCommandBus(CommandBus):
+class DefaultCommandBus(CommandBus[CommandType, CommandHandlerResponseType]):
     def __init__(self) -> None:
         self.__handlers: dict[type[Command], CommandHandler] = {}
 
@@ -22,7 +24,7 @@ class DefaultCommandBus(CommandBus):
     ) -> None:
         self.__handlers.update(commands_and_handlers)
 
-    async def dispatch(self, command: Command) -> None:
+    async def dispatch(self, command: CommandType) -> CommandHandlerResponseType:
         command_class = type(command)
 
         if command_class not in self.__handlers:
@@ -30,4 +32,4 @@ class DefaultCommandBus(CommandBus):
 
         handler = self.__handlers[command_class]
 
-        await handler.handle(command)
+        return await handler.handle(command)

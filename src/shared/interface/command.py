@@ -1,10 +1,14 @@
 # pylint: disable=invalid-name
 from abc import ABC, abstractmethod
-from typing import Generic, TypeVar
+from typing import Any, Generic, TypeVar
 
-TCommand = TypeVar(
-    "TCommand",
+CommandType = TypeVar(
+    "CommandType",
     bound="Command",
+)
+
+CommandHandlerResponseType = TypeVar(
+    "CommandHandlerResponseType",
 )
 
 
@@ -16,13 +20,13 @@ class Command:
     pass
 
 
-class CommandHandler(ABC, Generic[TCommand]):
+class CommandHandler(ABC):
     @abstractmethod
-    async def handle(self, command: TCommand) -> None:
+    async def handle(self, command: Command) -> Any:
         raise NotImplementedError
 
 
-class CommandBus(ABC):
+class CommandBus(ABC, Generic[CommandType, CommandHandlerResponseType]):
     @abstractmethod
     def register(
         self,
@@ -39,5 +43,5 @@ class CommandBus(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    async def dispatch(self, command: Command) -> None:
+    async def dispatch(self, command: CommandType) -> CommandHandlerResponseType:
         raise NotImplementedError
