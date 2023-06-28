@@ -26,4 +26,7 @@ async def test_create_account_command_handler(
     handler = CreateAccountHandler(repository, event_bus)
 
     # when
-    await handler.handle(command)
+    handler_response = await handler.handle(command)
+
+    # then
+    assert handler_response.email == command.email

@@ -8,7 +8,7 @@ class VerifyAccountEmail(Command):
         self.token = token
 
 
-class VerifyAccountEmailHandler(CommandHandler[VerifyAccountEmail]):
+class VerifyAccountEmailHandler(CommandHandler):
     def __init__(self, repository: AccountRepository):
         self.repository = repository
 
