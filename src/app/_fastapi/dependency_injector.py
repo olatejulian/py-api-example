@@ -15,6 +15,8 @@ from src.account import (
     InMemoryAccountRepository,
     Jinja2AccountEmailTemplateRender,
     SendEmailVerification,
+    VerifyAccountEmail,
+    VerifyAccountEmailHandler,
 )
 from src.shared import (
     AppConfig,
@@ -150,6 +152,7 @@ def command_bus_factory(
     bus.register_many(
         {
             CreateAccount: CreateAccountHandler(repository, event_bus),
+            VerifyAccountEmail: VerifyAccountEmailHandler(repository),
         }
     )
 

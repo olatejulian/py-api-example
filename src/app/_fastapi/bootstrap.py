@@ -1,12 +1,12 @@
-from fastapi import APIRouter, FastAPI
+from fastapi import FastAPI
 
-from .router.signup_router import signupRouter
+from .router import signupRouter, verifyEmailRouter
 
 
 def fastapi_bootstrap() -> FastAPI:
     app = FastAPI()
 
-    routers: list[APIRouter] = [signupRouter]
+    routers = [signupRouter, verifyEmailRouter]
 
     for router in routers:
         app.include_router(router)
