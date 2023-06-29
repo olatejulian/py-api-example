@@ -1,9 +1,9 @@
 import pytest
 
 from ..email_content import (
+    EmailContent,
     EmailContentCannotBeEmptyException,
     EmailContentTooLongException,
-    EmailContent,
     InvalidEmailContentTypeException,
 )
 
