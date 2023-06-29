@@ -24,6 +24,7 @@ class AppConfig(BaseConfig):
         super().__init__()
 
         self.url = self._get("APP_URL")
+        self.verify_path = self._get("APP_VERIFY_PATH")
 
 
 class EmailConfig(BaseConfig):
