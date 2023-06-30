@@ -4,7 +4,7 @@ from src.shared import EventHandler
 from ..service import AccountEmailVerificationSender
 
 
-class SendEmailVerification(EventHandler[AccountCreated]):
+class SendEmailVerificationHandler(EventHandler[AccountCreated]):
     def __init__(
         self,
         repository: AccountRepository,

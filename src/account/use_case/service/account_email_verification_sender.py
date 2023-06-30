@@ -28,7 +28,7 @@ class AccountEmailVerificationSender:
         verification_code: VerificationCode,
     ) -> None:
         email_verification_url = Url(
-            f"{self.config.url}{self.config.verify_path}?email={account_email_address.value}&token={verification_code.value}"
+            f"{self.config.url}{self.config.verify_path}?email={account_email_address.value}&token={verification_code.value}"  # pylint: disable=line-too-long
         )
 
         contents = self.email_template_renderer.render_email_verification_code_template(
