@@ -30,7 +30,7 @@ class SignupRequest(BaseModel):
 
 
 def signup_response_message(account_email: str) -> str:
-    return f"An email for verification purposes will send. If you don't receive any one, resend it using the route '/verify?email={account_email}&resend=true'"  # pylint: disable=line-too-long
+    return f"An email for verification purposes will send. If you don't receive any one, resend it using the route '/verify/resend/{account_email}'"  # pylint: disable=line-too-long
 
 
 class SignupResponseData(BaseModel):
