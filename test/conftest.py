@@ -1,24 +1,26 @@
+# pylint: disable=redefined-outer-name
 from typing import AsyncGenerator
 from uuid import uuid4
 
 import pytest
 import pytest_asyncio
+from fastapi import FastAPI
+from httpx import AsyncClient
 
-from src.account import BeanieAccountModel
-from src.account.domain import (
+from src.account import (
     Account,
     AccountEmailTemplateRender,
     AccountInputDto,
     AccountRepository,
+    BeanieAccountModel,
+    BeanieAccountRepository,
     EmailAddress,
+    InMemoryAccountRepository,
+    Jinja2AccountEmailTemplateRender,
     Name,
     Password,
 )
-from src.account.infra import (
-    BeanieAccountRepository,
-    InMemoryAccountRepository,
-    Jinja2AccountEmailTemplateRender,
-)
+from src.app import celery_event_bus_factory, database_factory, fastapi_bootstrap
 from src.shared import (
     Database,
     DatabaseConfig,
@@ -39,19 +41,33 @@ def random_account_fixture():
     )
 
 
-@pytest_asyncio.fixture
-async def account_repository(
+@pytest_asyncio.fixture()
+async def database_fixture() -> AsyncGenerator[Database, None]:
+    config = DatabaseConfig()
+
+    config.name = "test-py-api-example"
+
+    database = Database(
+        config=config,
+        models=[BeanieAccountModel],
+    )
+
+    await database.connect()
+
+    yield database
+
+    await BeanieAccountModel.delete_all(database.session)
+
+
+@pytest.fixture
+def account_repository(
     database_fixture: Database,  # pylint: disable=redefined-outer-name
-) -> AsyncGenerator[AccountRepository, None]:
+) -> AccountRepository:
     database = database_fixture
 
-    session = database.session
+    repository = BeanieAccountRepository(database.session)
 
-    repository = BeanieAccountRepository(session)
-
-    yield repository
-
-    await BeanieAccountModel.delete_all(session)
+    return repository
 
 
 @pytest.fixture
@@ -64,22 +80,28 @@ def account_email_template_render() -> AccountEmailTemplateRender:
     return Jinja2AccountEmailTemplateRender(EmailTemplateConfig())
 
 
-@pytest_asyncio.fixture()
-async def database_fixture():
-    config = DatabaseConfig()
-
-    config.name = "test-py-api-example"
-
-    database = Database(
-        config=config,
-        models=[BeanieAccountModel],
-    )
-
-    await database.connect()
-
-    return database
-
-
 @pytest.fixture
 def event_bus_fixture() -> EventBus:
     return FakeEventBus()
+
+
+@pytest.fixture
+def app(database_fixture: Database, event_bus_fixture: EventBus) -> FastAPI:
+    app = fastapi_bootstrap()
+
+    def override_database_dependency() -> Database:
+        return database_fixture
+
+    def override_event_bus_dependency() -> EventBus:
+        return event_bus_fixture
+
+    app.dependency_overrides[database_factory] = override_database_dependency
+
+    app.dependency_overrides[celery_event_bus_factory] = override_event_bus_dependency
+
+    return app
+
+
+@pytest.fixture
+def async_client(app: FastAPI):
+    return AsyncClient(app=app, base_url="http://localhost:3000")
