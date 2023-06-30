@@ -4,6 +4,7 @@ from src.account import (
     AccountCreated,
     AccountEmailSender,
     AccountEmailTemplateRender,
+    AccountEmailVerificationSender,
     AccountRepository,
     AioSmtpAccountEmailSender,
     BeanieAccountModel,
@@ -11,16 +12,13 @@ from src.account import (
     CreateAccount,
     CreateAccountHandler,
     EmailAddress,
-    FakeAccountEmailSender,
-    InMemoryAccountRepository,
     Jinja2AccountEmailTemplateRender,
-    SendEmailVerification,
+    SendEmailVerificationHandler,
     VerifyAccountEmail,
     VerifyAccountEmailHandler,
 )
 from src.shared import (
     AppConfig,
-    AsyncioEventBus,
     CeleryEventBus,
     CommandBus,
     Database,
@@ -29,7 +27,6 @@ from src.shared import (
     EmailConfig,
     EmailTemplateConfig,
     EventBus,
-    FakeEventBus,
 )
 
 
@@ -59,10 +56,6 @@ async def database_factory(
     return database
 
 
-def fake_account_repository_factory() -> AccountRepository:
-    return InMemoryAccountRepository()
-
-
 def beanie_account_repository_factory(
     database: Database = Depends(database_factory),
 ) -> AccountRepository:
@@ -87,58 +80,30 @@ def account_email_sender_factory(
     )
 
 
-def fake_account_email_sender_factory() -> AccountEmailSender:
-    return FakeAccountEmailSender()
-
-
-def asyncio_event_bus_factory(
-    app_config: AppConfig = Depends(app_config_factory),
-    account_repository: AccountRepository = Depends(beanie_account_repository_factory),
-    account_email_template_render: AccountEmailTemplateRender = Depends(
+def account_verification_email_sender_factory(
+    config: AppConfig = Depends(app_config_factory),
+    email_sender: AccountEmailSender = Depends(account_email_sender_factory),
+    email_template_renderer: AccountEmailTemplateRender = Depends(
         account_email_template_render_factory
     ),
-    account_email_sender: AccountEmailSender = Depends(account_email_sender_factory),
-) -> EventBus:
-    bus = AsyncioEventBus()
-
-    bus.register_many(
-        {
-            AccountCreated: [
-                SendEmailVerification(
-                    app_config=app_config,
-                    repository=account_repository,
-                    email_sender=account_email_sender,
-                    email_template_render=account_email_template_render,
-                )
-            ]
-        }
-    )
-
-    return bus
-
-
-def fake_event_bus_factory() -> EventBus:
-    return FakeEventBus()
+) -> AccountEmailVerificationSender:
+    return AccountEmailVerificationSender(config, email_template_renderer, email_sender)
 
 
 def celery_event_bus_factory(
-    app_config: AppConfig = Depends(app_config_factory),
     account_repository: AccountRepository = Depends(beanie_account_repository_factory),
-    account_email_template_render: AccountEmailTemplateRender = Depends(
-        account_email_template_render_factory
+    account_email_verification_sender: AccountEmailVerificationSender = Depends(
+        account_verification_email_sender_factory
     ),
-    account_email_sender: AccountEmailSender = Depends(account_email_sender_factory),
 ) -> EventBus:
     bus = CeleryEventBus()
 
     bus.register_many(
         {
             AccountCreated: [
-                SendEmailVerification(
-                    app_config=app_config,
-                    repository=account_repository,
-                    email_sender=account_email_sender,
-                    email_template_render=account_email_template_render,
+                SendEmailVerificationHandler(
+                    account_repository,
+                    account_email_verification_sender,
                 )
             ]
         }
