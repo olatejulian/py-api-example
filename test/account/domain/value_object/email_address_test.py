@@ -1,6 +1,9 @@
 import pytest
 
-from ..email_address import EmailAddress, InvalidEmailAddressException
+from account.domain.value_object.email_address import (
+    EmailAddress,
+    InvalidEmailAddressException,
+)
 
 
 def test_email_address_when_valid():

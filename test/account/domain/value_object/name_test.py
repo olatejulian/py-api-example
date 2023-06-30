@@ -1,6 +1,10 @@
 import pytest
 
-from ..name import EmptyNameException, InvalidNameTypeException, Name
+from account.domain.value_object.name import (
+    EmptyNameException,
+    InvalidNameTypeException,
+    Name,
+)
 
 
 def test_name_value_when_valid():

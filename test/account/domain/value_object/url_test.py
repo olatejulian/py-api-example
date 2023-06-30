@@ -1,4 +1,4 @@
-from ..url import Url
+from account.domain.value_object.url import Url
 
 
 def test_url_when_is_valid():

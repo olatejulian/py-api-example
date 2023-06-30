@@ -2,7 +2,10 @@ import pytest
 
 from src.account.domain import Account, AccountRepository
 
-from .verify_account_email import VerifyAccountEmail, VerifyAccountEmailHandler
+from account.use_case.command.verify_account_email import (
+    VerifyAccountEmail,
+    VerifyAccountEmailHandler,
+)
 
 
 @pytest.mark.asyncio

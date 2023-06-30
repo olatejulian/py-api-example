@@ -1,6 +1,10 @@
 import pytest
 
-from ..password import EmptyPasswordException, InvalidPasswordTypeException, Password
+from account.domain.value_object.password import (
+    EmptyPasswordException,
+    InvalidPasswordTypeException,
+    Password,
+)
 
 
 def test_password_value_when_valid():
