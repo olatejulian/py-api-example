@@ -21,9 +21,12 @@ class ResendVerificationEmailHandler(CommandHandler):
     async def handle(self, command: ResendVerificationEmail) -> None:
         account = await self.repository.get_by_email(command.email)
         if not account.is_email_verified():
-            if not account.email.verification_code:
-                account.generate_verification_code()
+            verification_code = (
+                account.email.verification_code
+                if account.email.verification_code
+                else account.generate_verification_code()
+            )
 
             await self.email_verification_sender.execute(
-                account.name, account.email.address, account.email.verification_code
+                account.name, account.email.address, verification_code
             )

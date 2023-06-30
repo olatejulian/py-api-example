@@ -16,12 +16,14 @@ class SendEmailVerificationHandler(EventHandler[AccountCreated]):
     async def handle(self, event: AccountCreated) -> None:
         account = await self.repository.get_by_id(event.account_id)
 
-        email_verification_code = account.generate_verification_code()
+        account_name = account.name
+        account_email_address = account.email.address
+        verification_code = account.generate_verification_code()
 
         await self.repository.update(account)
 
         await self.email_verification_sender.execute(
-            account_name=account.name,
-            account_email_address=account.email.address,
-            verification_code=email_verification_code,
+            account_name,
+            account_email_address,
+            verification_code,
         )
