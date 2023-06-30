@@ -1,6 +1,6 @@
 import pytest
 
-from account.domain.value_object.email_subject import (
+from src.account import (
     EmailSubject,
     EmailSubjectTooLongException,
     InvalidEmailSubjectTypeException,

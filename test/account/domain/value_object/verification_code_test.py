@@ -1,6 +1,6 @@
 import pytest
 
-from account.domain.value_object.verification_code import (
+from src.account import (
     InvalidVerificationCodeException,
     InvalidVerificationCodeLengthException,
     VerificationCode,

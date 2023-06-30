@@ -1,5 +1,4 @@
-from .entity import Entity
-from .interface import Event
+from src.shared import Entity, Event
 
 EVENT_NAME = "entity.created"
 

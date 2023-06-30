@@ -1,6 +1,6 @@
 import pytest
 
-from account.domain.value_object.email_content import (
+from src.account import (
     EmailContent,
     EmailContentCannotBeEmptyException,
     EmailContentTooLongException,

@@ -1,6 +1,6 @@
 import pytest
 
-from account.domain.value_object.name import (
+from src.account import (
     EmptyNameException,
     InvalidNameTypeException,
     Name,

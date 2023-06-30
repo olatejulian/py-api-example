@@ -1,8 +1,8 @@
 import pytest
 
-from src.account.domain import Account, AccountRepository
-
-from account.use_case.command.verify_account_email import (
+from src.account import (
+    Account,
+    AccountRepository,
     VerifyAccountEmail,
     VerifyAccountEmailHandler,
 )

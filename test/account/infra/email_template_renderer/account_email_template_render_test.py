@@ -1,6 +1,6 @@
 from bs4 import BeautifulSoup
 
-from src.account.domain import AccountEmailTemplateRender, Name, Url
+from src.account import AccountEmailTemplateRender, Name, Url
 
 
 def test_account_template_render_render_email_verification_template(

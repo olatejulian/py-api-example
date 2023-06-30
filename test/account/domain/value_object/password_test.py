@@ -1,6 +1,6 @@
 import pytest
 
-from account.domain.value_object.password import (
+from src.account import (
     EmptyPasswordException,
     InvalidPasswordTypeException,
     Password,

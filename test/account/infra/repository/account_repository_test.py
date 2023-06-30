@@ -1,6 +1,6 @@
 import pytest
 
-from src.account.domain import (
+from src.account import (
     Account,
     AccountInputDto,
     AccountNotFoundException,

@@ -1,13 +1,16 @@
 import pytest
 
-from account.domain.account import (
+from src.account import (
     Account,
     AccountEmailMustBeVerifiedException,
     AccountInputDto,
     CannotResetAccountPasswordException,
     CannotVerifyAccountEmailException,
+    EmailAddress,
+    Name,
+    Password,
+    VerificationCode,
 )
-from account.domain.value_object import EmailAddress, Name, Password, VerificationCode
 
 
 def test_account_create_staticmethod():

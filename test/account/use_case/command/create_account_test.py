@@ -1,9 +1,14 @@
 import pytest
 
-from src.account.domain import AccountRepository, EmailAddress, Name, Password
+from src.account import (
+    AccountRepository,
+    CreateAccount,
+    CreateAccountHandler,
+    EmailAddress,
+    Name,
+    Password,
+)
 from src.shared import EventBus
-
-from account.use_case.command.create_account import CreateAccount, CreateAccountHandler
 
 
 @pytest.mark.asyncio

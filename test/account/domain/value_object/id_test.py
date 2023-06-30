@@ -1,6 +1,6 @@
 import pytest
 
-from account.domain.value_object.id import Id, InvalidIdException
+from src.account import Id, InvalidIdException
 
 
 def test_id_value_when_valid():

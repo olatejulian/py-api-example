@@ -3,16 +3,16 @@ from fastapi.testclient import TestClient
 from httpx import AsyncClient
 
 from src.account import Account, AccountRepository
-from src.shared import DatabaseConfig
-
-from .bootstrap import fastapi_bootstrap
-from .dependency_injector import (
+from src.app import (
     beanie_account_repository_factory,
     celery_event_bus_factory,
     database_config_factory,
     fake_event_bus_factory,
+    fastapi_bootstrap,
+    signup_response_message,
+    verify_email_response_message,
 )
-from .router import signup_response_message, verify_email_response_message
+from src.shared import DatabaseConfig
 
 
 def override_database_config_factory() -> DatabaseConfig:

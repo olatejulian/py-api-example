@@ -1,6 +1,6 @@
 import pytest
 
-from account.domain.value_object.email_address import (
+from src.account import (
     EmailAddress,
     InvalidEmailAddressException,
 )

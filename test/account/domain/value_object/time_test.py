@@ -1,7 +1,7 @@
 # pylint: disable=pointless-statement
 import pytest
 
-from account.domain.value_object.time import InvalidTimeException, Time
+from src.account import InvalidTimeException, Time
 
 
 def test_time_value_when_valid():
