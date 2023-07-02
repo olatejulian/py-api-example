@@ -19,8 +19,8 @@ dependencies = [
     "python-multipart>=0.0.6",
     "uvicorn>=0.22.0",
     "pendulum>=2.1.2",
-    "celery[redis]>=5.3.1",
     "flower>=2.0.0",
+    "dependency-injector>=4.41.0",
 ]
 requires-python = ">=3.11"
 license = { text = "MIT" }
@@ -48,8 +48,6 @@ dev = [
 cov = { shell = "clear; pytest --cov=src src"}
 format = { shell = "clear; black src"}
 start = {shell ="clear; uvicorn src.main:app --reload --host 0.0.0.0 --port 3000"}
-"start:celery:flower" = {shell = "clear; watchmedo auto-restart -d ./src -p *.py --recursive -- celery -A src.main.celery flower --loglevel=info"}
-"start:celery:worker" = {shell = "clear; watchmedo auto-restart -d ./src -p *.py --recursive -- celery -A src.main.celery worker --loglevel=info"}
 release = { shell = "clear; semantic-release publish"}
 test = { shell = "clear; pytest; rm -rf ./**/__pycache__/"}
 
