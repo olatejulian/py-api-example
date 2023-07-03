@@ -1,29 +1,18 @@
-from src.account.domain import Account, AccountInputDto, AccountRepository, EmailAddress
-from src.shared import Command, CommandHandler, EventBus
+from src.account.domain import Account, AccountInputDto, AccountRepository
+from src.shared import Command, CommandHandler
 
 
 class CreateAccount(Command, AccountInputDto):
     pass
 
 
-class CreateAccountHandlerResponse:
-    def __init__(self, email: EmailAddress):
-        self.email = email
-
-
 class CreateAccountHandler(CommandHandler):
-    def __init__(self, repository: AccountRepository, event_bus: EventBus):
+    def __init__(self, repository: AccountRepository):
         self.repository = repository
-        self.event_bus = event_bus
 
-    async def handle(self, command: CreateAccount) -> CreateAccountHandlerResponse:
+    async def handle(self, command: CreateAccount) -> Account:
         account = Account.create(command)
 
         await self.repository.save(account)
 
-        events = account.collect_events()
-
-        for event in events:
-            await self.event_bus.dispatch(event)
-
-        return CreateAccountHandlerResponse(email=account.email.address)
+        return account

@@ -1,17 +1,19 @@
-from src.account.domain import AccountCreated, AccountRepository
+from src.account.domain import (
+    AccountCreated,
+    AccountRepository,
+    AccountVerificationEmailSender,
+)
 from src.shared import EventHandler
 
-from ..service import AccountEmailVerificationSender
 
-
-class SendEmailVerificationHandler(EventHandler[AccountCreated]):
+class SendVerificationEmailHandler(EventHandler):
     def __init__(
         self,
         repository: AccountRepository,
-        email_verification_sender: AccountEmailVerificationSender,
+        verification_email_sender: AccountVerificationEmailSender,
     ):
         self.repository = repository
-        self.email_verification_sender = email_verification_sender
+        self.verification_email_sender = verification_email_sender
 
     async def handle(self, event: AccountCreated) -> None:
         account = await self.repository.get_by_id(event.account_id)
@@ -22,7 +24,7 @@ class SendEmailVerificationHandler(EventHandler[AccountCreated]):
 
         await self.repository.update(account)
 
-        await self.email_verification_sender.execute(
+        await self.verification_email_sender.send(
             account_name,
             account_email_address,
             verification_code,

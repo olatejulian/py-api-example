@@ -1,1 +1,1 @@
-from .send_email_verification import *
+from .send_verification_email import *

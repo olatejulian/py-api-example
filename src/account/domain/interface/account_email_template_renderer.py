@@ -9,7 +9,7 @@ class EmailContents:
         self.plaintext_content = plaintext_content
 
 
-class AccountEmailTemplateRender(ABC):
+class AccountEmailTemplateRenderer(ABC):
     @abstractmethod
     def render_email_verification_code_template(
         self, account_name: Name, email_verification_url: Url

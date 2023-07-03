@@ -14,7 +14,7 @@ class FakeAccountEmailSender(AccountEmailSender):
         html_content: EmailContent,
         plaintext_content: EmailContent,
     ):
-        print(f"recipient: {recipient}")
-        print(f"subject: {subject}")
-        print(f"html_content: {html_content}")
-        print(f"plaintext_content: {plaintext_content}")
+        print(f"recipient: {recipient.value}")
+        print(f"subject: {subject.value}")
+        print(f"html_content: {html_content.value}")
+        print(f"plaintext_content: {plaintext_content.value}")

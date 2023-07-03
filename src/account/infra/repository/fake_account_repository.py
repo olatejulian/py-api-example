@@ -8,7 +8,7 @@ from src.account.domain import (
 )
 
 
-class InMemoryAccountRepository(AccountRepository):
+class FakeAccountRepository(AccountRepository):
     def __init__(self):
         self._accounts: dict[tuple[str, str], Account] = {}
 

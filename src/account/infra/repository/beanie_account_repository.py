@@ -90,7 +90,7 @@ class BeanieAccountRepository(AccountRepository):
     @staticmethod
     def _to_model(account: Account) -> BeanieAccountModel:
         return BeanieAccountModel(
-            id=UUID(account.id.value),
+            id=UUID(account.id.value),  # type: ignore
             name=account.name.value,
             email_address=account.email.address.value,
             email_verification_code=account.email.verification_code.value

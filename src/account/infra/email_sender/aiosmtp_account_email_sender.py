@@ -8,26 +8,30 @@ from src.account.domain import (
     EmailContent,
     EmailSubject,
 )
+from src.shared import Config
 
 
 class CannotSendEmailException(Exception):
     pass
 
 
+class EmailSenderConfig(Config):
+    def __init__(self):
+        super().__init__()
+
+        self.smtp_host = self._get("EMAIL_SMTP_HOST")
+        self.smtp_port = int(self._get("EMAIL_SMTP_PORT"))
+        self.username = self._get("EMAIL_USERNAME")
+        self.password = self._get("EMAIL_PASSWORD")
+        self.sender = self._get("EMAIL_SENDER_ADDRESS")
+
+
 class AioSmtpAccountEmailSender(AccountEmailSender):
     def __init__(
         self,
-        smtp_host: str,
-        smtp_port: int,
-        username: str,
-        password: str,
-        sender: EmailAddress,
+        config: EmailSenderConfig,
     ):
-        self.smtp_host = smtp_host
-        self.smtp_port = smtp_port
-        self.username = username
-        self.password = password
-        self.sender = sender
+        self.config = config
 
     async def send(
         self,
@@ -38,7 +42,7 @@ class AioSmtpAccountEmailSender(AccountEmailSender):
     ) -> None:
         email_message = EmailMessage()
 
-        email_message["From"] = self.sender.value
+        email_message["From"] = self.config.sender
         email_message["To"] = recipient.value
         email_message["Subject"] = subject.value
 
@@ -47,9 +51,11 @@ class AioSmtpAccountEmailSender(AccountEmailSender):
         email_message.add_alternative(html_content.value, subtype="html")
 
         try:
-            async with SMTP(hostname=self.smtp_host, port=self.smtp_port) as smtp:
+            async with SMTP(
+                hostname=self.config.smtp_host, port=self.config.smtp_port
+            ) as smtp:
                 await smtp.connect()
-                await smtp.login(self.username, self.password)
+                await smtp.login(self.config.username, self.config.password)
 
                 await smtp.send_message(email_message)
 

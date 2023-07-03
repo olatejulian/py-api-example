@@ -1,7 +1,9 @@
-from src.account.domain import AccountRepository, EmailAddress
+from src.account.domain import (
+    AccountRepository,
+    AccountVerificationEmailSender,
+    EmailAddress,
+)
 from src.shared import Command, CommandHandler
-
-from ..service import AccountEmailVerificationSender
 
 
 class ResendVerificationEmail(Command):
@@ -13,20 +15,18 @@ class ResendVerificationEmailHandler(CommandHandler):
     def __init__(
         self,
         repository: AccountRepository,
-        email_verification_sender: AccountEmailVerificationSender,
+        verification_email_sender: AccountVerificationEmailSender,
     ):
         self.repository = repository
-        self.email_verification_sender = email_verification_sender
+        self.verification_email_sender = verification_email_sender
 
     async def handle(self, command: ResendVerificationEmail) -> None:
         account = await self.repository.get_by_email(command.email)
         if not account.is_email_verified():
-            verification_code = (
-                account.email.verification_code
-                if account.email.verification_code
-                else account.generate_verification_code()
-            )
+            verification_code = account.generate_verification_code()
 
-            await self.email_verification_sender.execute(
+            await self.repository.update(account)
+
+            await self.verification_email_sender.send(
                 account.name, account.email.address, verification_code
             )

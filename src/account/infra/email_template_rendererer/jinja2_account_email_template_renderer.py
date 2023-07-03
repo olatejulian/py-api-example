@@ -1,17 +1,36 @@
 from jinja2 import Environment, FileSystemLoader
 
 from src.account.domain import (
-    AccountEmailTemplateRender,
+    AccountEmailTemplateRenderer,
     EmailContent,
     EmailContents,
     Name,
     Url,
 )
-from src.shared import EmailTemplateConfig
+from src.shared import Config
 
 
-class Jinja2AccountEmailTemplateRender(AccountEmailTemplateRender):
-    def __init__(self, config: EmailTemplateConfig):
+class EmailTemplateRendererConfig(Config):
+    def __init__(self):
+        super().__init__()
+
+        self.template_dir = self._get("EMAIL_TEMPLATE_DIR")
+        self.email_verification_html_template = self._get(
+            "EMAIL_VERIFICATION_HTML_TEMPLATE"
+        )
+        self.email_verification_plaintext_template = self._get(
+            "EMAIL_VERIFICATION_PLAINTEXT_TEMPLATE"
+        )
+        self.reset_password_html_template = self._get(
+            "EMAIL_RESET_PASSWORD_HTML_TEMPLATE"
+        )
+        self.reset_password_plaintext_template = self._get(
+            "EMAIL_RESET_PASSWORD_PLAINTEXT_TEMPLATE"
+        )
+
+
+class Jinja2AccountEmailTemplateRenderer(AccountEmailTemplateRenderer):
+    def __init__(self, config: EmailTemplateRendererConfig):
         self.config = config
 
         self._env = Environment(loader=FileSystemLoader(self.config.template_dir))
