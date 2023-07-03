@@ -1,14 +1,8 @@
 from src.shared import Entity, Event
 
-EVENT_NAME = "entity.created"
-
 
 class SimpleEvent(Event):
-    __event_name = EVENT_NAME
-
-    @classmethod
-    def get_event_name(cls) -> str:
-        return cls.__event_name
+    pass
 
 
 class SimpleEntity(Entity):
@@ -19,6 +13,7 @@ class SimpleEntity(Entity):
 
 def test_entity_collect_events():
     entity = SimpleEntity()
+
     events = list(entity.collect_events())
+
     assert len(events) == 1
-    assert events[0].get_event_name() == EVENT_NAME

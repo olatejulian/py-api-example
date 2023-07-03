@@ -9,29 +9,31 @@ from httpx import AsyncClient
 
 from src.account import (
     Account,
-    AccountEmailTemplateRender,
+    AccountEmailSender,
+    AccountEmailTemplateRenderer,
     AccountInputDto,
     AccountRepository,
     BeanieAccountModel,
     BeanieAccountRepository,
     EmailAddress,
-    InMemoryAccountRepository,
-    Jinja2AccountEmailTemplateRender,
+    EmailTemplateRendererConfig,
+    FakeAccountEmailSender,
+    FakeAccountRepository,
+    Jinja2AccountEmailTemplateRenderer,
     Name,
     Password,
 )
-from src.app import celery_event_bus_factory, database_factory, fastapi_bootstrap
-from src.shared import (
-    Database,
-    DatabaseConfig,
-    EmailTemplateConfig,
-    EventBus,
-    FakeEventBus,
+from src.app import (
+    AppContainer,
+    BeanieMongoDatabase,
+    BeanieMongoDatabaseConfig,
+    bootstrap,
+    init_database,
 )
 
 
 @pytest.fixture
-def random_account_fixture():
+def create_random_account():
     return Account.create(
         AccountInputDto(
             name=Name(f"{uuid4()}"),
@@ -42,17 +44,12 @@ def random_account_fixture():
 
 
 @pytest_asyncio.fixture()
-async def database_fixture() -> AsyncGenerator[Database, None]:
-    config = DatabaseConfig()
+async def database() -> AsyncGenerator[BeanieMongoDatabase, None]:
+    config = BeanieMongoDatabaseConfig()
 
     config.name = "test-py-api-example"
 
-    database = Database(
-        config=config,
-        models=[BeanieAccountModel],
-    )
-
-    await database.connect()
+    database = await init_database(config)
 
     yield database
 
@@ -61,43 +58,38 @@ async def database_fixture() -> AsyncGenerator[Database, None]:
 
 @pytest.fixture
 def account_repository(
-    database_fixture: Database,  # pylint: disable=redefined-outer-name
+    database: BeanieMongoDatabase,  # pylint: disable=redefined-outer-name
 ) -> AccountRepository:
-    database = database_fixture
-
     repository = BeanieAccountRepository(database.session)
 
     return repository
 
 
 @pytest.fixture
+def account_email_template_renderer() -> AccountEmailTemplateRenderer:
+    return Jinja2AccountEmailTemplateRenderer(EmailTemplateRendererConfig())
+
+
+@pytest.fixture
 def fake_account_repository() -> AccountRepository:
-    return InMemoryAccountRepository()
+    return FakeAccountRepository()
 
 
 @pytest.fixture
-def account_email_template_render() -> AccountEmailTemplateRender:
-    return Jinja2AccountEmailTemplateRender(EmailTemplateConfig())
+def fake_account_email_sender() -> AccountEmailSender:
+    return FakeAccountEmailSender()
 
 
 @pytest.fixture
-def event_bus_fixture() -> EventBus:
-    return FakeEventBus()
+def app(
+    database: BeanieMongoDatabase, fake_account_email_sender: AccountEmailSender
+) -> FastAPI:
+    container = AppContainer()
 
+    container.database.override(database)
+    container.account_container.account_email_sender.override(fake_account_email_sender)
 
-@pytest.fixture
-def app(database_fixture: Database, event_bus_fixture: EventBus) -> FastAPI:
-    app = fastapi_bootstrap()
-
-    def override_database_dependency() -> Database:
-        return database_fixture
-
-    def override_event_bus_dependency() -> EventBus:
-        return event_bus_fixture
-
-    app.dependency_overrides[database_factory] = override_database_dependency
-
-    app.dependency_overrides[celery_event_bus_factory] = override_event_bus_dependency
+    app = bootstrap(container)
 
     return app
 

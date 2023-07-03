@@ -34,7 +34,7 @@ async def test_signup(async_client: AsyncClient):
 
 @pytest.mark.asyncio
 async def test_verify_email(
-    random_account_fixture: Account,
+    create_random_account: Account,
     account_repository: AccountRepository,
     async_client: AsyncClient,
 ):
@@ -42,7 +42,7 @@ async def test_verify_email(
     should be able to verify an email using query params (email to be verified and it token)
     """
     # given
-    entity = random_account_fixture
+    entity = create_random_account
 
     repository = account_repository
 
@@ -57,7 +57,7 @@ async def test_verify_email(
     async with async_client as client:
         await repository.save(entity)
 
-        response = await client.post("/verify", params=query_params)
+        response = await client.get("/verify", params=query_params)
 
         # then
         assert response.status_code == 200

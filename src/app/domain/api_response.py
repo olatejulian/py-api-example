@@ -40,7 +40,7 @@ class SchemaExtraConfig:
         return schema_extra
 
 
-class HTTPResponseModel(GenericModel, Generic[HTTPResponseDataType]):
+class APIResponse(GenericModel, Generic[HTTPResponseDataType]):
     status_code: int
     message: str
     data: dict[str, Any] | HTTPResponseDataType = {}

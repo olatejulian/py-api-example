@@ -1,23 +1,21 @@
 from bs4 import BeautifulSoup
 
-from src.account import AccountEmailTemplateRender, Name, Url
+from src.account import AccountEmailTemplateRenderer, Name, Url
 
 
 def test_account_template_render_render_email_verification_template(
-    account_email_template_render: AccountEmailTemplateRender,
+    account_email_template_renderer: AccountEmailTemplateRenderer,
 ):
     """
     should be able to render a template with the provided URL.
     """
-    render = account_email_template_render
+    renderer = account_email_template_renderer
 
-    email_verification_url = Url(
-        "https://a-wonderful-webapp-name.com/verifiy/123456789"
-    )
+    email_verification_url = Url("https://a-wonderful-webapp-name.com/verify/123456")
 
-    account_name = Name("John Doe)")
+    account_name = Name("John Doe")
 
-    template = render.render_email_verification_code_template(
+    template = renderer.render_email_verification_code_template(
         account_name=account_name,
         email_verification_url=email_verification_url,
     )

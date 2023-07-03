@@ -10,13 +10,13 @@ from src.account import (
 
 @pytest.mark.asyncio
 async def test_verify_account(
-    random_account_fixture: Account, fake_account_repository: AccountRepository
+    create_random_account: Account, fake_account_repository: AccountRepository
 ):
     """
     should be able to verify  and if is not activate, activate it an account when the token is valid
     """
     # given
-    account = random_account_fixture
+    account = create_random_account
 
     repository = fake_account_repository
 

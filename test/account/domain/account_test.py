@@ -49,12 +49,12 @@ def test_account_create_staticmethod():
     assert all(expressions)
 
 
-def test_account_change_name_method(random_account_fixture: Account):
+def test_account_change_name_method(create_random_account: Account):
     """
     should be able to change the account name
     """
     # given
-    entity = random_account_fixture
+    entity = create_random_account
 
     new_name = "Jane Doe"
 
@@ -68,12 +68,12 @@ def test_account_change_name_method(random_account_fixture: Account):
     assert entity.name == new_name
 
 
-def test_account_change_email_method(random_account_fixture: Account):
+def test_account_change_email_method(create_random_account: Account):
     """
     should be able to change the account email
     """
     # given
-    entity = random_account_fixture
+    entity = create_random_account
 
     new_email = "john.doe@email.com"
 
@@ -89,12 +89,12 @@ def test_account_change_email_method(random_account_fixture: Account):
     assert entity.email.verified_on is None
 
 
-def test_account_generate_verification_code_method(random_account_fixture: Account):
+def test_account_generate_verification_code_method(create_random_account: Account):
     """
     should be able to generate a verification code for the account email
     """
     # given
-    entity = random_account_fixture
+    entity = create_random_account
 
     # when
     verification_code = entity.generate_verification_code()
@@ -105,12 +105,12 @@ def test_account_generate_verification_code_method(random_account_fixture: Accou
     assert entity.email.verification_code_sent_on is not None
 
 
-def test_account_verify_email_method(random_account_fixture: Account):
+def test_account_verify_email_method(create_random_account: Account):
     """
     should be able to verify the account email
     """
     # given
-    entity = random_account_fixture
+    entity = create_random_account
 
     code = entity.generate_verification_code()
 
@@ -123,13 +123,13 @@ def test_account_verify_email_method(random_account_fixture: Account):
 
 
 def test_account_verify_email_method_when_there_is_no_verification_code(
-    random_account_fixture: Account,
+    create_random_account: Account,
 ):
     """
     should not be able to verify the account email when there is no verification code
     """
     # given
-    entity = random_account_fixture
+    entity = create_random_account
 
     false_code = VerificationCode("123456")
 
@@ -139,13 +139,13 @@ def test_account_verify_email_method_when_there_is_no_verification_code(
 
 
 def test_account_verify_email_method_when_there_is_no_verification_code_sent_on_date(
-    random_account_fixture: Account,
+    create_random_account: Account,
 ):
     """
     should not be able to verify the account email when there is no verification code sent on date
     """
     # given
-    entity = random_account_fixture
+    entity = create_random_account
 
     code = entity.generate_verification_code()
 
@@ -157,13 +157,13 @@ def test_account_verify_email_method_when_there_is_no_verification_code_sent_on_
 
 
 def test_account_verify_email_method_when_when_the_verification_code_has_expired(
-    random_account_fixture: Account,
+    create_random_account: Account,
 ):
     """
     should not be able to verify the account email when the verification code has expired
     """
     # given
-    entity = random_account_fixture
+    entity = create_random_account
 
     code = entity.generate_verification_code()
 
@@ -180,13 +180,13 @@ def test_account_verify_email_method_when_when_the_verification_code_has_expired
 
 
 def test_account_verify_email_method_when_the_verification_code_is_not_the_same(
-    random_account_fixture: Account,
+    create_random_account: Account,
 ):
     """
     should not be able to verify the account email when the verification code is not the same
     """
     # given
-    entity = random_account_fixture
+    entity = create_random_account
 
     entity.generate_verification_code()
 
@@ -198,13 +198,13 @@ def test_account_verify_email_method_when_the_verification_code_is_not_the_same(
 
 
 def test_account_is_email_verified_method(
-    random_account_fixture: Account,
+    create_random_account: Account,
 ):
     """
     should be able to say if the account email is verified
     """
     # given
-    entity = random_account_fixture
+    entity = create_random_account
 
     verification_code = entity.generate_verification_code()
 
@@ -217,12 +217,12 @@ def test_account_is_email_verified_method(
     assert result is True
 
 
-def test_account_generate_reset_password_code_method(random_account_fixture: Account):
+def test_account_generate_reset_password_code_method(create_random_account: Account):
     """
     should be able to generate a reset password code for the account
     """
     # given
-    entity = random_account_fixture
+    entity = create_random_account
 
     # when
     reset_password_code = entity.generate_reset_password_code()
@@ -233,12 +233,12 @@ def test_account_generate_reset_password_code_method(random_account_fixture: Acc
     assert entity.password.reset_verification_code_sent_on is not None
 
 
-def test_account_reset_password_method(random_account_fixture: Account):
+def test_account_reset_password_method(create_random_account: Account):
     """
     should be able to reset the account password
     """
     # given
-    entity = random_account_fixture
+    entity = create_random_account
 
     new_password = "123456"
 
@@ -257,13 +257,13 @@ def test_account_reset_password_method(random_account_fixture: Account):
 
 
 def test_account_reset_password_method_when_there_is_no_reset_verification_code(
-    random_account_fixture: Account,
+    create_random_account: Account,
 ):
     """
     should not be able to reset the account password when there is no reset verification code
     """
     # given
-    entity = random_account_fixture
+    entity = create_random_account
 
     entity_password = entity.password.password
 
@@ -275,14 +275,14 @@ def test_account_reset_password_method_when_there_is_no_reset_verification_code(
 
 
 def test_account_reset_password_method_when_there_is_no_reset_verification_code_sent_on_date(
-    random_account_fixture: Account,
+    create_random_account: Account,
 ):
     """
     should not be able to reset the account password
     when there is no reset verification code sent on date
     """
     # given
-    entity = random_account_fixture
+    entity = create_random_account
 
     entity_password = entity.password.password
 
@@ -296,13 +296,13 @@ def test_account_reset_password_method_when_there_is_no_reset_verification_code_
 
 
 def test_account_reset_password_method_when_when_the_reset_verification_code_has_expired(
-    random_account_fixture: Account,
+    create_random_account: Account,
 ):
     """
     should not be able to reset the account password when the reset verification code has expired
     """
     # given
-    entity = random_account_fixture
+    entity = create_random_account
 
     entity_password = entity.password.password
 
@@ -321,14 +321,14 @@ def test_account_reset_password_method_when_when_the_reset_verification_code_has
 
 
 def test_account_reset_password_method_when_the_reset_verification_code_is_not_the_same(
-    random_account_fixture: Account,
+    create_random_account: Account,
 ):
     """
     should not be able to reset the account password
     when the reset verification code is not the same
     """
     # given
-    entity = random_account_fixture
+    entity = create_random_account
 
     entity_password = entity.password.password
 
@@ -391,12 +391,12 @@ def test_account_compare_password_method_when_not_equal():
     assert result is False
 
 
-def test_account_activate_method(random_account_fixture: Account):
+def test_account_activate_method(create_random_account: Account):
     """
     should be able to activate the account
     """
     # given
-    entity = random_account_fixture
+    entity = create_random_account
 
     verification_code = entity.generate_verification_code()
 
@@ -411,13 +411,13 @@ def test_account_activate_method(random_account_fixture: Account):
 
 
 def test_account_activate_method_when_email_is_not_verified(
-    random_account_fixture: Account,
+    create_random_account: Account,
 ):
     """
     should not be able to activate the account when the email is not verified
     """
     # given
-    entity = random_account_fixture
+    entity = create_random_account
 
     # when
     with pytest.raises(AccountEmailMustBeVerifiedException):
@@ -425,13 +425,13 @@ def test_account_activate_method_when_email_is_not_verified(
 
 
 def test_account_is_active_method(
-    random_account_fixture: Account,
+    create_random_account: Account,
 ):
     """
     should be able to say if the account is active
     """
     # given
-    entity = random_account_fixture
+    entity = create_random_account
 
     verification_code = entity.generate_verification_code()
 
@@ -446,12 +446,12 @@ def test_account_is_active_method(
     assert result is True
 
 
-def test_account_deactivate_method(random_account_fixture: Account):
+def test_account_deactivate_method(create_random_account: Account):
     """
     should be able to deactivate the account
     """
     # given
-    entity = random_account_fixture
+    entity = create_random_account
 
     verification_code = entity.generate_verification_code()
 

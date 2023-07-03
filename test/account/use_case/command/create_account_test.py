@@ -8,30 +8,37 @@ from src.account import (
     Name,
     Password,
 )
-from src.shared import EventBus
 
 
 @pytest.mark.asyncio
 async def test_create_account_command_handler(
-    fake_account_repository: AccountRepository, event_bus_fixture: EventBus
+    fake_account_repository: AccountRepository,
 ):
     """
     should be able to create an account
     """
     # given
     repository = fake_account_repository
-    event_bus = event_bus_fixture
+
+    password = "any password"
 
     command = CreateAccount(
         name=Name("any name"),
         email=EmailAddress("john.doe@email.com"),
-        password=Password("any password"),
+        password=Password(password),
     )
 
-    handler = CreateAccountHandler(repository, event_bus)
+    handler = CreateAccountHandler(repository)
 
     # when
-    handler_response = await handler.handle(command)
+    entity = await handler.handle(command)
+
+    print("COMMAND PASSWORD:", command.password.value)
+    print("ENTITY PASSWORD:", entity.password.password.value)
 
     # then
-    assert handler_response.email == command.email
+    assert entity is not None
+    assert entity.id is not None
+    assert entity.name == command.name
+    assert entity.email.address == command.email
+    assert entity.password.password == password

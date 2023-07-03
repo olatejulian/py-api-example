@@ -13,13 +13,13 @@ from src.account import (
 
 @pytest.mark.asyncio
 async def test_account_repository_save_method(
-    account_repository: AccountRepository, random_account_fixture: Account
+    account_repository: AccountRepository, create_random_account: Account
 ):
     """
     should be able to save an account
     """
     # given
-    entity = random_account_fixture
+    entity = create_random_account
 
     repository = account_repository
 
@@ -32,13 +32,13 @@ async def test_account_repository_save_method(
 
 @pytest.mark.asyncio
 async def test_account_repository_save_method_when_try_to_save_with_same_email(
-    account_repository: AccountRepository, random_account_fixture: Account
+    account_repository: AccountRepository, create_random_account: Account
 ):
     """
     should be able to raise an exception when trying to save an account with duplicated id or email
     """
     # given
-    entity = random_account_fixture
+    entity = create_random_account
 
     another_entity = Account.create(
         AccountInputDto(entity.name, entity.email.address, entity.password.password),
@@ -57,13 +57,13 @@ async def test_account_repository_save_method_when_try_to_save_with_same_email(
 
 @pytest.mark.asyncio
 async def test_account_repository_get_by_id_method(
-    account_repository: AccountRepository, random_account_fixture: Account
+    account_repository: AccountRepository, create_random_account: Account
 ):
     """
     should be able to get an account by id
     """
     # given
-    entity = random_account_fixture
+    entity = create_random_account
 
     repository = account_repository
 
@@ -80,13 +80,13 @@ async def test_account_repository_get_by_id_method(
 
 @pytest.mark.asyncio
 async def test_account_repository_get_by_id_method_when_id_does_not_exist(
-    account_repository: AccountRepository, random_account_fixture: Account
+    account_repository: AccountRepository, create_random_account: Account
 ):
     """
     should be able to raises an exception when trying to get an account by id that does not exist
     """
     # given
-    entity = random_account_fixture
+    entity = create_random_account
 
     repository = account_repository
 
@@ -97,13 +97,13 @@ async def test_account_repository_get_by_id_method_when_id_does_not_exist(
 
 @pytest.mark.asyncio
 async def test_account_repository_update_method(
-    account_repository: AccountRepository, random_account_fixture: Account
+    account_repository: AccountRepository, create_random_account: Account
 ):
     """
     should be able to update an account
     """
     # given
-    entity = random_account_fixture
+    entity = create_random_account
 
     repository = account_repository
 
