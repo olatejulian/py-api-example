@@ -1,6 +1,3 @@
-from src.app import fastapi_bootstrap
-from src.shared import celery_bootstrap
+from src.app import bootstrap
 
-app = fastapi_bootstrap()
-
-celery = celery_bootstrap()
+app = bootstrap()
