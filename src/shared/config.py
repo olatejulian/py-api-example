@@ -7,7 +7,7 @@ class CannotFindEnvVarException(Exception):
     pass
 
 
-class BaseConfig:
+class Config:
     def __init__(self):
         dotenv.load_dotenv()
 
@@ -19,45 +19,7 @@ class BaseConfig:
         raise CannotFindEnvVarException(f"Cannot find env var {key}")
 
 
-class AppConfig(BaseConfig):
-    def __init__(self):
-        super().__init__()
-
-        self.url = self._get("APP_URL")
-        self.verify_path = self._get("APP_VERIFY_PATH")
-
-
-class EmailConfig(BaseConfig):
-    def __init__(self):
-        super().__init__()
-
-        self.smtp_host = self._get("EMAIL_SMTP_HOST")
-        self.smtp_port = int(self._get("EMAIL_SMTP_PORT"))
-        self.username = self._get("EMAIL_USERNAME")
-        self.password = self._get("EMAIL_PASSWORD")
-        self.sender = self._get("EMAIL_SENDER_ADDRESS")
-
-
-class EmailTemplateConfig(BaseConfig):
-    def __init__(self):
-        super().__init__()
-
-        self.template_dir = self._get("EMAIL_TEMPLATE_DIR")
-        self.email_verification_html_template = self._get(
-            "EMAIL_VERIFICATION_HTML_TEMPLATE"
-        )
-        self.email_verification_plaintext_template = self._get(
-            "EMAIL_VERIFICATION_PLAINTEXT_TEMPLATE"
-        )
-        self.reset_password_html_template = self._get(
-            "EMAIL_RESET_PASSWORD_HTML_TEMPLATE"
-        )
-        self.reset_password_plaintext_template = self._get(
-            "EMAIL_RESET_PASSWORD_PLAINTEXT_TEMPLATE"
-        )
-
-
-class AuthConfig(BaseConfig):
+class AuthConfig(Config):
     def __init__(self):
         super().__init__()
 

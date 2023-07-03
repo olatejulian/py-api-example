@@ -1,6 +1,6 @@
 from typing import Generator
 
-from .interface import Event
+from .event import Event
 
 
 class Entity:
