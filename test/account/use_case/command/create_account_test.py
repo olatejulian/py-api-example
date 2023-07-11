@@ -33,9 +33,6 @@ async def test_create_account_command_handler(
     # when
     entity = await handler.handle(command)
 
-    print("COMMAND PASSWORD:", command.password.value)
-    print("ENTITY PASSWORD:", entity.password.password.value)
-
     # then
     assert entity is not None
     assert entity.id is not None

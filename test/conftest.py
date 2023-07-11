@@ -9,10 +9,12 @@ from httpx import AsyncClient
 
 from src.account import (
     Account,
+    AccountAuthenticator,
     AccountEmailSender,
     AccountEmailTemplateRenderer,
     AccountInputDto,
     AccountRepository,
+    AuthConfig,
     BeanieAccountModel,
     BeanieAccountRepository,
     EmailAddress,
@@ -20,6 +22,7 @@ from src.account import (
     FakeAccountEmailSender,
     FakeAccountRepository,
     Jinja2AccountEmailTemplateRenderer,
+    JoseAccountAuthenticator,
     Name,
     Password,
 )
@@ -49,11 +52,11 @@ async def database() -> AsyncGenerator[BeanieMongoDatabase, None]:
 
     config.name = "test-py-api-example"
 
-    database = await init_database(config)
+    database_ = await init_database(config)
 
-    yield database
+    yield database_
 
-    await BeanieAccountModel.delete_all(database.session)
+    await BeanieAccountModel.delete_all(database_.session)
 
 
 @pytest.fixture
@@ -63,6 +66,17 @@ def account_repository(
     repository = BeanieAccountRepository(database.session)
 
     return repository
+
+
+@pytest.fixture()
+def account_authenticator(
+    fake_account_repository: AccountRepository,
+) -> AccountAuthenticator:
+    config = AuthConfig()
+
+    repository = fake_account_repository
+
+    return JoseAccountAuthenticator(config, repository)
 
 
 @pytest.fixture
