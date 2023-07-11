@@ -5,6 +5,7 @@ from ..account import (
     AccountContainer,
     AccountCreated,
     CreateAccount,
+    GetAccessToken,
     ResendVerificationEmail,
     VerifyAccountEmail,
 )
@@ -12,6 +13,7 @@ from .infra import (
     BeanieMongoDatabaseConfig,
     DefaultCommandBus,
     DefaultEventBus,
+    DefaultQueryBus,
     init_database,
 )
 
@@ -46,6 +48,15 @@ class AppContainer(containers.DeclarativeContainer):
                 AccountCreated: providers.List(
                     account_container.send_verification_email_event_handler
                 ),
+            }
+        ),
+    )
+
+    query_bus = providers.Singleton(
+        DefaultQueryBus,
+        handlers=providers.Dict(
+            {
+                GetAccessToken: account_container.get_access_token_query_handler,
             }
         ),
     )
