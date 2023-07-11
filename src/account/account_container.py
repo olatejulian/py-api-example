@@ -3,15 +3,18 @@ from dependency_injector import containers, providers
 
 from .infra import (
     AioSmtpAccountEmailSender,
+    AuthConfig,
     BeanieAccountRepository,
     DefaultAccountVerificationEmailSender,
     EmailSenderConfig,
     EmailTemplateRendererConfig,
     Jinja2AccountEmailTemplateRenderer,
+    JoseAccountAuthenticator,
     VerificationEmailSenderConfig,
 )
 from .use_case import (
     CreateAccountHandler,
+    GetAccessTokenHandler,
     ResendVerificationEmailHandler,
     SendVerificationEmailHandler,
     VerifyAccountEmailHandler,
@@ -30,6 +33,8 @@ class AccountContainer(containers.DeclarativeContainer):
 
     email_sender_config = providers.Singleton(EmailSenderConfig)
 
+    auth_config = providers.Singleton(AuthConfig)
+
     # infra
     account_repository = providers.Singleton(
         BeanieAccountRepository,
@@ -46,8 +51,6 @@ class AccountContainer(containers.DeclarativeContainer):
         config=email_sender_config,
     )
 
-    # use_case
-    # service
     account_verification_email_sender = providers.Singleton(
         DefaultAccountVerificationEmailSender,
         config=verification_email_sender_config,
@@ -55,6 +58,11 @@ class AccountContainer(containers.DeclarativeContainer):
         email_sender=account_email_sender,
     )
 
+    account_authenticator = providers.Singleton(
+        JoseAccountAuthenticator, config=auth_config, repository=account_repository
+    )
+
+    # use_case
     # command
     create_account_command_handler = providers.Singleton(
         CreateAccountHandler,
@@ -77,4 +85,9 @@ class AccountContainer(containers.DeclarativeContainer):
         SendVerificationEmailHandler,
         repository=account_repository,
         verification_email_sender=account_verification_email_sender,
+    )
+
+    # query
+    get_access_token_query_handler = providers.Singleton(
+        GetAccessTokenHandler, authenticator=account_authenticator
     )
