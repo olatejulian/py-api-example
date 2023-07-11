@@ -14,7 +14,7 @@ class EmptyPasswordException(Exception):
 class Password(ValueObject[str]):
     __cryptographer = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-    def __init__(self, value: str):
+    def __init__(self, value: str, hashed: bool = False):
         validators = [
             ValueValidator(
                 isinstance(value, str),
@@ -28,7 +28,8 @@ class Password(ValueObject[str]):
 
         super().__init__(value, validators)
 
-        self.__hash_itself()
+        if not hashed:
+            self.__hash_itself()
 
     def __eq__(self, other: object) -> bool:
         return self.verify(other, self.value) if isinstance(other, str) else False
