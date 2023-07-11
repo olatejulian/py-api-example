@@ -11,41 +11,10 @@ from src.account import (
 from src.app.app_container import AppContainer
 from src.app.domain import APIResponse, CommandBus, SchemaExtraConfig
 
-
-def verify_email_response_message() -> str:
-    return "Email verified successfully."
+verifyEmailRouter = APIRouter(tags=["Public", "Verify"])
 
 
-class VerifyEmailResponse(APIResponse[dict]):
-    class Config:
-        schema_extra = SchemaExtraConfig.override_schema_extra_example(
-            data={}, message=verify_email_response_message()
-        )
-
-
-verifyEmailRouter = APIRouter(tags=["public", "verify email"])
-
-
-@verifyEmailRouter.get("/verify", response_model=VerifyEmailResponse)
-@inject
-async def verify_email(
-    email: str,
-    token: str,
-    command_bus: CommandBus[VerifyAccountEmail, None] = Depends(
-        Provide[AppContainer.command_bus]
-    ),
-) -> VerifyEmailResponse:
-    await command_bus.dispatch(
-        VerifyAccountEmail(email=EmailAddress(email), token=VerificationCode(token))
-    )
-
-    return VerifyEmailResponse(
-        status_code=200,
-        data={},
-        message=verify_email_response_message(),
-    )
-
-
+# post
 class ResendVerificationEmailRequest(BaseModel):
     email: str
 
@@ -57,14 +26,13 @@ class ResendVerificationEmailRequest(BaseModel):
         }
 
 
-def resend_verification_email_response_message() -> str:
-    return "An email will be sent to you shortly."
+RESEND_VERIFICATION_EMAIL_RESPONSE_MESSAGE = "An email will be sent to you shortly."
 
 
 class ResendVerificationEmailResponse(APIResponse[dict]):
     class Config:
         schema_extra = SchemaExtraConfig.override_schema_extra_example(
-            data={}, message=resend_verification_email_response_message()
+            data={}, message=RESEND_VERIFICATION_EMAIL_RESPONSE_MESSAGE
         )
 
 
@@ -86,5 +54,36 @@ async def resend_verification_email(
     return VerifyEmailResponse(
         status_code=200,
         data={},
-        message=resend_verification_email_response_message(),
+        message=RESEND_VERIFICATION_EMAIL_RESPONSE_MESSAGE,
+    )
+
+
+VERIFY_EMAIL_RESPONSE_MESSAGE = "Email verified successfully."
+
+
+class VerifyEmailResponse(APIResponse[dict]):
+    class Config:
+        schema_extra = SchemaExtraConfig.override_schema_extra_example(
+            data={}, message=VERIFY_EMAIL_RESPONSE_MESSAGE
+        )
+
+
+# get
+@verifyEmailRouter.get("/verify", response_model=VerifyEmailResponse)
+@inject
+async def verify_email(
+    email: str,
+    token: str,
+    command_bus: CommandBus[VerifyAccountEmail, None] = Depends(
+        Provide[AppContainer.command_bus]
+    ),
+) -> VerifyEmailResponse:
+    await command_bus.dispatch(
+        VerifyAccountEmail(email=EmailAddress(email), token=VerificationCode(token))
+    )
+
+    return VerifyEmailResponse(
+        status_code=200,
+        data={},
+        message=VERIFY_EMAIL_RESPONSE_MESSAGE,
     )

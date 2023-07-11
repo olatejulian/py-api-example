@@ -22,8 +22,7 @@ class SignupRequest(BaseModel):
         }
 
 
-def signup_response_message(account_email: str) -> str:
-    return f"An email for verification purposes will send. If you don't receive any one, resend it using the route '/verify/resend/{account_email}'"  # pylint: disable=line-too-long
+SIGNUP_RESPONSE_MESSAGE = "An email for verification purposes will send."
 
 
 class SignupResponseData(BaseModel):
@@ -34,11 +33,11 @@ class SignupResponse(APIResponse[SignupResponseData]):
     class Config:
         schema_extra = SchemaExtraConfig.override_schema_extra_example(
             data={"email": "john.doe@email.com"},
-            message=signup_response_message("john.doe@email.com"),
+            message=SIGNUP_RESPONSE_MESSAGE,
         )
 
 
-signupRouter = APIRouter(tags=["public"])
+signupRouter = APIRouter(tags=["Public", "Signup"])
 
 
 @signupRouter.post(
@@ -47,20 +46,20 @@ signupRouter = APIRouter(tags=["public"])
 )
 @inject
 async def signup(
-    request: SignupRequest,
+    request_body: SignupRequest,
     background_tasks: BackgroundTasks,
     command_bus: CommandBus[CreateAccount, Account] = Depends(
         Provide[AppContainer.command_bus]
     ),
     event_bus: EventBus = Depends(Provide[AppContainer.event_bus]),
 ):
-    account = await command_bus.dispatch(
-        CreateAccount(
-            name=Name(request.name),
-            email=EmailAddress(request.email),
-            password=Password(request.password),
-        )
+    command = CreateAccount(
+        name=Name(request_body.name),
+        email=EmailAddress(request_body.email),
+        password=Password(request_body.password),
     )
+
+    account = await command_bus.dispatch(command)
 
     events = account.collect_events()
 
@@ -72,7 +71,7 @@ async def signup(
     response = SignupResponse(
         status_code=200,
         data=SignupResponseData(email=account_email),
-        message=signup_response_message(account_email),
+        message=SIGNUP_RESPONSE_MESSAGE,
     )
 
     return response
