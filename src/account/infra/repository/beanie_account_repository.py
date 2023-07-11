@@ -69,7 +69,7 @@ class BeanieAccountRepository(AccountRepository):
                 else None,
             ),
             password=AccountPassword(
-                password=Password(model.password),
+                password=Password(model.password, hashed=True),
                 reset_verification_code=VerificationCode(
                     model.password_reset_verification_code
                 )
